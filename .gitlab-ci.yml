@@ -1,0 +1,31 @@
+variables:
+  PYTHON_ENVIRONMENT_PATH: /usr/workspace/${GITLAB_USER_LOGIN}/.conda_pytorchCPU
+
+stages:
+  - build
+  - test
+
+build:
+  tags:
+    - shell
+    - quartz
+  stage: build
+  before_script:
+    - eval "$(conda shell.bash hook)"
+    - conda activate $PYTHON_ENVIRONMENT_PATH
+  script:
+    - flake8 spdlayers
+    - flake8 examples
+    - flake8 tests
+    - python -m pip install .
+
+test:
+  tags:
+    - shell
+    - quartz
+  stage: test
+  before_script:
+    - eval "$(conda shell.bash hook)"
+    - conda activate $PYTHON_ENVIRONMENT_PATH
+  script:
+    - pytest --cov=spdlayers tests/tests.py
