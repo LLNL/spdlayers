@@ -1,6 +1,8 @@
 # spdlayers
 
-Symmetric Positive Definite (SPD) layers for PyTorch
+Symmetric Positive Definite (SPD) enforcement layers for PyTorch.
+
+Regardless of the input, the output of these layers will always be a SPD tensor!
 
 ## Installation
 
