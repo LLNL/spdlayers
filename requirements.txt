@@ -3,3 +3,4 @@ torch>=1.9.0
 # testing
 flake8
 pytest
+pytest-cov
