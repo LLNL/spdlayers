@@ -6,7 +6,7 @@ Regardless of the input, the output of these layers will always be a SPD tensor!
 
 ## Installation
 
-Clone this repo then install with pip
+Install with pip
 
 ```
 python -m pip install spdlayers
