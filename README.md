@@ -9,9 +9,7 @@ Regardless of the input, the output of these layers will always be a SPD tensor!
 Clone this repo then install with pip
 
 ```
-git clone spdlayers.git
-cd spdlayers
-python -m pip install .
+python -m pip install spdlayers
 ```
 
 ## About
@@ -80,7 +78,7 @@ model = nn.Sequential(
         )
 ```
 
-[Examples/train_sequential_model.py](Examples/train_sequential_model.py) trains this model on the orthotropic stiffness trensor from the 2D Isotruss.
+[examples/train_sequential_model.py](https://github.com/LLNL/spdlayers/blob/main/examples/train_sequential_model.py) trains this model on the orthotropic stiffness trensor from the 2D Isotruss.
 
 ## API
 
@@ -129,7 +127,7 @@ If you find this work useful, please cite our upcoming paper.
 
 ## License
 
-see [LICENSE](LICENSE) and [NOTICE](NOTICE)
+see [LICENSE](https://github.com/LLNL/spdlayers/blob/main/LICENSE) and [NOTICE](https://github.com/LLNL/spdlayers/blob/main/NOTICE)
 
 SPDX-License-Identifier: MIT
 
