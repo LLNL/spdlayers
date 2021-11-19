@@ -16,6 +16,7 @@ setup(
     author_email="jekel1@llnl.gov",
     packages=['spdlayers'],
     description=short,
+    license='MIT License',
     long_description=long_description,
     long_description_content_type='text/markdown',
     platforms=["any"],
@@ -24,4 +25,8 @@ setup(
         "setuptools >= 38.6.0"
         ],
     python_requires=">=3.6",  # needed for @ as matrix multiplication
+    classifiers=[
+          'License :: OSI Approved :: Python Software Foundation License',
+          'Programming Language :: Python :: 3',
+        ],
 )
