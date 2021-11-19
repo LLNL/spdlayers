@@ -4,14 +4,14 @@
 
 from distutils.core import setup
 from pathlib import Path
-
+import spdlayers.version as spdlayers
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 short = "Symmetric Positive Definite (SPD) enforcement layers for PyTorch"
 
 setup(
     name="spdlayers",
-    version="0.0.1",
+    version=spdlayers.__version__,
     author="Charles Jekel",
     author_email="jekel1@llnl.gov",
     packages=['spdlayers'],
