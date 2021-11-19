@@ -2,7 +2,7 @@
 # contributors
 # SPDX-License-Identifier: MIT
 
-from distutils.core import setup
+from setuptools import setup
 from pathlib import Path
 import spdlayers.version as spdlayers
 this_directory = Path(__file__).parent
