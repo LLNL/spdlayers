@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: MIT
 
 from distutils.core import setup
-# read the contents of your README file
 from pathlib import Path
+
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 short = "Symmetric Positive Definite (SPD) enforcement layers for PyTorch"
