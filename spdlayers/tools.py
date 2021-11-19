@@ -1,3 +1,7 @@
+# Copyright 2021, Lawrence Livermore National Security, LLC and spdlayer
+# contributors
+# SPDX-License-Identifier: MIT
+
 def in_shape_from(output_shape):
     """
     Returns input_shape required for a output_shape x output_shape SPD tensor

@@ -1,3 +1,7 @@
+# Copyright 2021, Lawrence Livermore National Security, LLC and spdlayer
+# contributors
+# SPDX-License-Identifier: MIT
+
 import numpy as np
 import torch
 import torch.nn as nn
