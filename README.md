@@ -98,7 +98,7 @@ spdlayers
 
 ## Documentation
 
-You can use pdoc to build API documentation.
+You can use pdoc to build API documentation, or view the [online documentation](https://software.llnl.gov/spdlayers).
 
 ```
 pdoc3 --html spdlayers
