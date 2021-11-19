@@ -14,6 +14,7 @@ setup(
     version=spdlayers.__version__,
     author="Charles Jekel",
     author_email="jekel1@llnl.gov",
+    url='https://github.com/LLNL/spdlayers',
     packages=['spdlayers'],
     description=short,
     license='MIT License',
