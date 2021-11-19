@@ -123,11 +123,14 @@ pytest-cov
 numpy
 ```
 
-## License
-
-MIT LICENSE
-
 ## Citation
 
 If you find this work useful, please cite our upcoming paper.
 
+## License
+
+see [LICENSE](LICENSE) and [NOTICE](NOTICE)
+
+SPDX-License-Identifier: MIT
+
+LLNL-CODE-829369
