@@ -6,7 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Placeholder for unreleased changes
+### Added
+- Add url homepage in setup.py to point to this github repo
+
+### Changed
+- tweak readme installation notes to just use pip to install
 
 ## [0.0.1] - 2021-11-19
 ### Added
