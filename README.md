@@ -121,6 +121,10 @@ pytest-cov
 numpy
 ```
 
+## Changelog
+
+Changes are documented in [CHANGELOG.md](https://github.com/LLNL/spdlayers/blob/main/CHANGELOG.md)
+
 ## Citation
 
 If you find this work useful, please cite our upcoming paper.
