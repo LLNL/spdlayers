@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - tweak readme installation notes to just use pip to install
 
+### Fixed
+- bug in single source version, which prevented install of spdlayers if torch was not already installed
+- mistake in the pypi license classifier
+
 ## [0.0.1] - 2021-11-19
 ### Added
 - First public release!

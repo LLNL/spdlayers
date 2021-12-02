@@ -4,14 +4,18 @@
 
 from setuptools import setup
 from pathlib import Path
-import spdlayers.version as spdlayers
+
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 short = "Symmetric Positive Definite (SPD) enforcement layers for PyTorch"
 
+version = {}
+with open("spdlayers/version.py") as fp:
+    exec(fp.read(), version)
+
 setup(
     name="spdlayers",
-    version=spdlayers.__version__,
+    version=version["__version__"],
     author="Charles Jekel",
     author_email="jekel1@llnl.gov",
     url='https://github.com/LLNL/spdlayers',
@@ -27,7 +31,7 @@ setup(
         ],
     python_requires=">=3.6",  # needed for @ as matrix multiplication
     classifiers=[
-          'License :: OSI Approved :: Python Software Foundation License',
-          'Programming Language :: Python :: 3',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3',
         ],
 )
