@@ -17,5 +17,5 @@ def in_shape_from(output_shape):
         This is the sum of the first n natural numbers
         https://cseweb.ucsd.edu/groups/tatami/handdemos/sum/
     """
-    input_shape = output_shape * (output_shape + 1) / 2.
+    input_shape = output_shape * (output_shape + 1) // 2
     return input_shape
