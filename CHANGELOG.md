@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `spdlayers.tools.in_shape_from` now should always output integers (as opposed to floats)
 
-
 ## [0.0.3] - 2022-02-06
 
 ### Changed
