@@ -40,8 +40,12 @@ def in_shape_from(output_shape):
     Returns:
         (int): The input shape associated from a
             `[output_shape, output_shape` SPD tensor.
+
+    Notes:
+        This is the sum of the first n natural numbers
+        https://cseweb.ucsd.edu/groups/tatami/handdemos/sum/
     &#34;&#34;&#34;
-    input_shape = sum([i for i in range(output_shape + 1)])
+    input_shape = output_shape * (output_shape + 1) // 2
     return input_shape</code></pre>
 </details>
 </section>
@@ -64,7 +68,10 @@ def in_shape_from(output_shape):
 </dl>
 <h2 id="returns">Returns</h2>
 <p>(int): The input shape associated from a
-<code>[output_shape, output_shape</code> SPD tensor.</p></div>
+<code>[output_shape, output_shape</code> SPD tensor.</p>
+<h2 id="notes">Notes</h2>
+<p>This is the sum of the first n natural numbers
+<a href="https://cseweb.ucsd.edu/groups/tatami/handdemos/sum/">https://cseweb.ucsd.edu/groups/tatami/handdemos/sum/</a></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -79,8 +86,12 @@ def in_shape_from(output_shape):
     Returns:
         (int): The input shape associated from a
             `[output_shape, output_shape` SPD tensor.
+
+    Notes:
+        This is the sum of the first n natural numbers
+        https://cseweb.ucsd.edu/groups/tatami/handdemos/sum/
     &#34;&#34;&#34;
-    input_shape = sum([i for i in range(output_shape + 1)])
+    input_shape = output_shape * (output_shape + 1) // 2
     return input_shape</code></pre>
 </details>
 </dd>
