@@ -17,6 +17,7 @@ class TestSPD(unittest.TestCase):
     def test_input_shape(self):
         in_shape = in_shape_from(6)
         self.assertTrue(in_shape == 21)
+        self.assertIsInstance(in_shape, int)
 
     def test_Eigen_anisotropic(self):
         x = torch.rand(batch_size, 21).double()
