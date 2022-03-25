@@ -5,6 +5,7 @@
 import unittest
 import numpy as np
 import torch
+import torch.nn as nn
 from spdlayers import Eigen, Cholesky
 from spdlayers import in_shape_from
 
@@ -96,6 +97,48 @@ class TestSPD(unittest.TestCase):
             self.assertTrue(False)
         except ValueError:
             self.assertTrue(True)
+
+    def test_example_one(self):
+        hidden_size = 100
+        n_features = 2
+        out_shape = 6
+        in_shape = in_shape_from(out_shape)
+
+        model = nn.Sequential(
+            nn.Linear(n_features, hidden_size),
+            nn.Linear(hidden_size, in_shape),
+            Cholesky(output_shape=out_shape)
+        )
+        x = torch.rand((10, n_features))
+        model(x)
+
+    def test_example_two(self):
+        hidden_size = 100
+        n_features = 2
+        out_shape = 6
+        in_shape = in_shape_from(out_shape)
+
+        model = nn.Sequential(
+            nn.Linear(n_features, hidden_size),
+            nn.Linear(hidden_size, in_shape),
+            Eigen(output_shape=out_shape)
+        )
+        x = torch.rand((10, n_features))
+        model(x)
+
+    def test_different_output(self):
+        hidden_size = 100
+        n_features = 2
+        out_shape = 21
+        in_shape = in_shape_from(out_shape)
+
+        model = nn.Sequential(
+            nn.Linear(n_features, hidden_size),
+            nn.Linear(hidden_size, in_shape),
+            Eigen(output_shape=out_shape)
+        )
+        x = torch.rand((10, n_features))
+        model(x)
 
 
 if __name__ == '__main__':
