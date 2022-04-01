@@ -127,7 +127,16 @@ Changes are documented in [CHANGELOG.md](https://github.com/LLNL/spdlayers/blob/
 
 ## Citation
 
-If you find this work useful, please cite our upcoming paper.
+If you find this work useful, please cite our paper.
+
+```bib
+@article{jekel2022neural,
+  title={Neural Network Layers for Prediction of Positive Definite Elastic Stiffness Tensors},
+  author={Jekel, Charles F and Swartz, Kenneth E and White, Daniel A and Tortorelli, Daniel A and Watts, Seth E},
+  journal={arXiv preprint arXiv:2203.13938},
+  year={2022}
+}
+```
 
 ## License
 
