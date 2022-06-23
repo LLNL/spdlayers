@@ -125,7 +125,7 @@ numpy
 
 Changes are documented in [CHANGELOG.md](https://github.com/LLNL/spdlayers/blob/main/CHANGELOG.md)
 
-## Citation
+## Citations
 
 ### Cholesky
 
