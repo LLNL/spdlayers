@@ -10,6 +10,7 @@ from spdlayers import Eigen, Cholesky
 from spdlayers import in_shape_from
 
 positive_funs = ['Abs', 'Square', 'Softplus', 'ReLU', 'ReLU6', '4', 'Exp']
+positive_funs_chol = positive_funs + ['None']
 batch_size = 1000
 
 
@@ -31,7 +32,7 @@ class TestSPD(unittest.TestCase):
 
     def test_Cholesky_anisotropic(self):
         x = torch.rand(batch_size, 21).double()
-        for pos in positive_funs:
+        for pos in positive_funs_chol:
             myCholesky = Cholesky(output_shape=6, positive=pos).double()
             out = myCholesky(x)
             u = torch.real(torch.linalg.eigvals(out))
