@@ -148,7 +148,7 @@ keywords = {Neural networks, Plasticity, Hyperelasticity, Finite element method,
 
 What this paper proposed is that you do a Cholesky decomposition on each data point in your dataset, and then train a NN to learn the lower triangular form. This is a great paper because the method is so simple that it is very easy for every researcher to use!
 
-What we propose you do instead with this method is not to perform a Cholesky decomposition on your data, but rather include the `LL^T` operation as a transformation within your NN. We believe this subtle difference provides for the following advantages:
+What we proposed you do instead with this method is not to perform a Cholesky decomposition on your data, but rather include the `LL^T` operation as a transformation within your NN. We believe this subtle difference provides for the following advantages:
 - no transformation of your dataset is needed
 - evaluate the training performance on the real data
 - eases production use of the model (i.e. the black-box mapping of `x`→`C`)
@@ -181,7 +181,7 @@ We proposed you should abstract this method into a NN layer. This subtle change 
 
 ### spdlayers
 
-If you find our abstractions and presentation useful, please cite our paper.
+If you find our abstractions and presentation useful, please cite our paper. Our paper demonstrated that the inclusion of these `spdlayers` resulted in more accurate models.
 
 ```bib
 @article{jekel2022neural,
