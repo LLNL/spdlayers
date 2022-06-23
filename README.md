@@ -181,7 +181,7 @@ We proposed you should abstract this method into a NN layer. This subtle change 
 
 ### spdlayers
 
-If you find our abstractions and presentation useful, please cite our paper. Our paper demonstrated that the inclusion of these `spdlayers` resulted in more accurate models.
+If you find our abstractions and presentation useful, please cite our paper. Our paper demonstrated that the inclusion of these `spdlayers` increased model accuracy.
 
 ```bib
 @article{jekel2022neural,
