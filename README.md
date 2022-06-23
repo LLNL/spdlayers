@@ -177,6 +177,7 @@ We proposed you should abstract this method into a NN layer. This subtle change 
 - no transformation of your dataset is needed
 - evaluate the training performance in the real space
 - easily fit any non-linear regression model
+- allows for many more transitional maps other than just the exponential
 - eases production use of the model (i.e. a single pytorch model does the black-box mapping of `x`→`C`)
 
 ### spdlayers
