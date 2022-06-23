@@ -24,6 +24,8 @@ def _positive_function(positive):
         return lambda x: torch.pow(x, 4)
     elif positive == 'Exp':
         return torch.exp
+    elif positive == 'None':
+        return torch.nn.Identity()
     else:
         error = f"Positve transformation {positive} not supported!"
         raise ValueError(error)
@@ -52,7 +54,7 @@ class Cholesky(nn.Module):
     """
 
     def __init__(self, output_shape=6, symmetry='anisotropic',
-                 positive='Square', min_value=1e-8):
+                 positive='None', min_value=1e-8):
         """
         Initialize Cholesky SPD layer
 
@@ -67,8 +69,8 @@ class Cholesky(nn.Module):
                 special case of symmetry for a 6x6 tensor.
             positive (str): The function to perform the positive
                 transformation of the diagonal of the lower triangle tensor.
-                Choices are 'Abs', 'Square' (default), 'Softplus', 'ReLU',
-                'ReLU6', '4', and 'Exp'.
+                Choices are 'Abs', 'Square', 'Softplus', 'ReLU',
+                'ReLU6', '4', 'Exp', and 'None' (default).
             min_value (float): The minimum allowable value for a diagonal
                 component. Default is 1e-8.
         """
@@ -139,7 +141,7 @@ class Eigen(nn.Module):
             positive (str): The function to perform the positive
                 transformation of the diagonal of the lower triangle tensor.
                 Choices are 'Abs', 'Square' (default), 'Softplus', 'ReLU',
-                'ReLU6', '4', and 'Exp'.
+                'ReLU6', '4', 'Exp', 'None'.
             min_value (float): The minimum allowable value for a diagonal
                 component. Default is 1e-8.
         """

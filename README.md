@@ -125,9 +125,64 @@ numpy
 
 Changes are documented in [CHANGELOG.md](https://github.com/LLNL/spdlayers/blob/main/CHANGELOG.md)
 
-## Citation
+## Citations
 
-If you find this work useful, please cite our paper.
+### Cholesky
+
+If you use the Cholesky method, you should cite the following paper.
+
+```bib
+@article{XU2021110072,
+title = {Learning constitutive relations using symmetric positive definite neural networks},
+journal = {Journal of Computational Physics},
+volume = {428},
+pages = {110072},
+year = {2021},
+issn = {0021-9991},
+doi = {https://doi.org/10.1016/j.jcp.2020.110072},
+url = {https://www.sciencedirect.com/science/article/pii/S0021999120308469},
+author = {Kailai Xu and Daniel Z. Huang and Eric Darve},
+keywords = {Neural networks, Plasticity, Hyperelasticity, Finite element method, Multiscale homogenization}
+}
+```
+
+What this paper proposed is that you do a Cholesky decomposition on each data point in your dataset, and then train a NN to learn the lower triangular form. This is a great paper because the method is so simple that it is very easy for every researcher to use!
+
+What we proposed you do instead with this method is not to perform a Cholesky decomposition on your data, but rather include the `LL^T` operation as a transformation within your NN. We believe this subtle difference provides for the following advantages:
+- no transformation of your dataset is needed
+- evaluate the training performance on the real data
+- eases production use of the model (i.e. a single pytorch model does the black-box mapping of `x`→`C`)
+
+### Eigendecomposition
+
+If you use the Eigendecomposition method, you should cite the following paper.
+
+```bib
+@article{https://doi.org/10.1002/nme.2681,
+author = {Amsallem, David and Cortial, Julien and Carlberg, Kevin and Farhat, Charbel},
+title = {A method for interpolating on manifolds structural dynamics reduced-order models},
+journal = {International Journal for Numerical Methods in Engineering},
+volume = {80},
+number = {9},
+pages = {1241-1258},
+keywords = {reduced-order modeling, matrix manifolds, real-time prediction, surrogate modeling, linear structural dynamics},
+doi = {https://doi.org/10.1002/nme.2681},
+url = {https://onlinelibrary.wiley.com/doi/abs/10.1002/nme.2681},
+eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1002/nme.2681}
+}
+```
+What this paper proposed is that you perform an Eigendecomposition on each data point in your dataset. You could then fit a linear model in a tangent space that will always be SPD (and it is pure mathematical beauty).
+
+We proposed you should abstract this method into a NN layer. This subtle change allows for the following advantages:
+- no transformation of your dataset is needed
+- evaluate the training performance in the real space
+- easily fit any non-linear regression model
+- allows for many more transitional maps other than just the exponential
+- eases production use of the model (i.e. a single pytorch model does the black-box mapping of `x`→`C`)
+
+### spdlayers
+
+If you find our abstractions and presentation useful, please cite our paper. Our paper demonstrated that the inclusion of these `spdlayers` increased model accuracy.
 
 ```bib
 @article{jekel2022neural,
