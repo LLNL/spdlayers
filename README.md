@@ -151,7 +151,7 @@ What this paper proposed is that you do a Cholesky decomposition on each data po
 What we proposed you do instead with this method is not to perform a Cholesky decomposition on your data, but rather include the `LL^T` operation as a transformation within your NN. We believe this subtle difference provides for the following advantages:
 - no transformation of your dataset is needed
 - evaluate the training performance on the real data
-- eases production use of the model (i.e. the black-box mapping of `x`→`C`)
+- eases production use of the model (i.e. a single pytorch model does the black-box mapping of `x`→`C`)
 
 ### Eigendecomposition
 
@@ -177,7 +177,7 @@ We proposed you should abstract this method into a NN layer. This subtle change 
 - no transformation of your dataset is needed
 - evaluate the training performance in the real space
 - easily fit any non-linear regression model
-- eases production use of the model (i.e. the black-box mapping of `x`→`C`)
+- eases production use of the model (i.e. a single pytorch model does the black-box mapping of `x`→`C`)
 
 ### spdlayers
 
