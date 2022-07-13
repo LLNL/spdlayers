@@ -141,6 +141,52 @@ class TestSPD(unittest.TestCase):
         x = torch.rand((10, n_features))
         model(x)
 
+    def test_training_eig_n_zero(self):
+        in_shape = 6
+        n_epochs = 100
+        n_data = 10
+        hidden_size = 10
+        out_shape = 3
+        n_features = 2
+        X = torch.rand(n_data, n_features)
+        Y = torch.zeros(n_data, out_shape, out_shape)
+        Y[:, 0, 0] = 2.0*X[:, 0]
+        Y[:, 1, 0] = -2.0*X[:, 1]
+        Y[:, 1, 1] = 2.0*X[:, 0]*X[:, 1]
+        Y[:, 2, 0] = -2.0*X[:, 0]
+        Y[:, 2, 1] = 2.0*X[:, 1]
+        Y[:, 2, 2] = 3.0 + X[:, 0]*X[:, 1]
+        Y = Y @ Y.transpose(-2, -1)
+        # Y is SPD
+        X = X.double()
+        Y = Y.double()
+
+        # define the model using the Eigen SPD layer
+        model = nn.Sequential(
+                nn.Linear(n_features, hidden_size),
+                nn.Linear(hidden_size, in_shape),
+                Eigen(output_shape=out_shape,
+                      symmetry='anisotropic',
+                      positive='ReLU',
+                      n_zero_eigvals=1,
+                      min_value=0.0)
+                )
+        model = model.double()
+        loss_fn = nn.MSELoss()
+        loss0 = loss_fn(model(X), Y)
+        optimizer = torch.optim.LBFGS(model.parameters(), lr=1.0)
+
+        for epoch in range(n_epochs):
+            def closure():
+                optimizer.zero_grad()
+                output = model(X)
+                loss = loss_fn(output, Y)
+                loss.backward()
+                return loss
+            loss = optimizer.step(closure)
+            print(f'Epoch: {epoch:4d} Loss: {loss.item():.5f}')
+        self.assertTrue(loss.item() < loss0.item())
+
 
 if __name__ == '__main__':
     unittest.main()
