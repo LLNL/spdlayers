@@ -52,6 +52,8 @@ def _positive_function(positive):
         return lambda x: torch.pow(x, 4)
     elif positive == &#39;Exp&#39;:
         return torch.exp
+    elif positive == &#39;None&#39;:
+        return torch.nn.Identity()
     else:
         error = f&#34;Positve transformation {positive} not supported!&#34;
         raise ValueError(error)
@@ -80,7 +82,7 @@ class Cholesky(nn.Module):
     &#34;&#34;&#34;
 
     def __init__(self, output_shape=6, symmetry=&#39;anisotropic&#39;,
-                 positive=&#39;Square&#39;, min_value=1e-8):
+                 positive=&#39;None&#39;, min_value=1e-8):
         &#34;&#34;&#34;
         Initialize Cholesky SPD layer
 
@@ -95,8 +97,8 @@ class Cholesky(nn.Module):
                 special case of symmetry for a 6x6 tensor.
             positive (str): The function to perform the positive
                 transformation of the diagonal of the lower triangle tensor.
-                Choices are &#39;Abs&#39;, &#39;Square&#39; (default), &#39;Softplus&#39;, &#39;ReLU&#39;,
-                &#39;ReLU6&#39;, &#39;4&#39;, and &#39;Exp&#39;.
+                Choices are &#39;Abs&#39;, &#39;Square&#39;, &#39;Softplus&#39;, &#39;ReLU&#39;,
+                &#39;ReLU6&#39;, &#39;4&#39;, &#39;Exp&#39;, and &#39;None&#39; (default).
             min_value (float): The minimum allowable value for a diagonal
                 component. Default is 1e-8.
         &#34;&#34;&#34;
@@ -151,7 +153,7 @@ class Eigen(nn.Module):
     &#34;&#34;&#34;
 
     def __init__(self, output_shape=6, symmetry=&#39;anisotropic&#39;,
-                 positive=&#39;Square&#39;, min_value=1e-8):
+                 positive=&#39;Square&#39;, min_value=1e-8, n_zero_eigvals=0):
         &#34;&#34;&#34;
         Initialize Eigendecomposition SPD layer
 
@@ -167,9 +169,15 @@ class Eigen(nn.Module):
             positive (str): The function to perform the positive
                 transformation of the diagonal of the lower triangle tensor.
                 Choices are &#39;Abs&#39;, &#39;Square&#39; (default), &#39;Softplus&#39;, &#39;ReLU&#39;,
-                &#39;ReLU6&#39;, &#39;4&#39;, and &#39;Exp&#39;.
+                &#39;ReLU6&#39;, &#39;4&#39;, &#39;Exp&#39;, &#39;None&#39;.
             min_value (float): The minimum allowable value for a diagonal
                 component. Default is 1e-8.
+            n_zero_eigvals (int): The number of zero eigenvalues to expect.
+                This will zero the `n_zero_eigvals` smallest eigenvalues. When
+                n_zero_eigvals=0 (default) then outputs will be SPD, otherwise
+                outputs will be symmetric semi-definite. Note that min_value
+                does not affect the zero&#39;d eigenvalues, which will be exactly
+                0.0.
         &#34;&#34;&#34;
         super(Eigen, self).__init__()
         if symmetry == &#39;anisotropic&#39;:
@@ -181,6 +189,13 @@ class Eigen(nn.Module):
                 raise ValueError(e)
         else:
             raise ValueError(f&#34;Symmetry {symmetry} not supported!&#34;)
+        if n_zero_eigvals &lt; 0 or n_zero_eigvals &gt;= output_shape:
+            raise ValueError(
+                f&#39;n_zero_eigvals: {n_zero_eigvals} must be less than&#34;\
+                &#34; output_shape and greater than 0!&#39;
+            )
+        self.n_zero_eigvals = n_zero_eigvals
+        self.zero_eigvals = n_zero_eigvals &gt; 0
 
         self.output_shape = output_shape
         self.positive = positive
@@ -211,11 +226,15 @@ class Eigen(nn.Module):
         out[:, self.inds_b, self.inds_a] = x
 
         # U, D, UT = torch.linalg.svd(out)  # SVD DOES NOT WORK! reason unknown
-        D, U = torch.linalg.eig(out)
-        U = torch.real(U)
-        D = torch.real(D)
-        UT = U.inverse()  # don&#39;t tranpose, need inverse!
+        D, U = torch.linalg.eigh(out)
         D = self.positive_fun(D) + self.min_value
+        if self.zero_eigvals:
+            zeros_and_ones = torch.ones_like(D)
+            # set the columns to zero
+            zeros_and_ones[:, :self.n_zero_eigvals] = 0.0
+            # zero out the smallest eigenvalues
+            D = D * zeros_and_ones
+        UT = U.inverse()  # don&#39;t transpose, need inverse!
         out = U @ torch.diag_embed(D) @ UT
         return out</code></pre>
 </details>
@@ -231,7 +250,7 @@ class Eigen(nn.Module):
 <dl>
 <dt id="spdlayers.layers.Cholesky"><code class="flex name class">
 <span>class <span class="ident">Cholesky</span></span>
-<span>(</span><span>output_shape=6, symmetry='anisotropic', positive='Square', min_value=1e-08)</span>
+<span>(</span><span>output_shape=6, symmetry='anisotropic', positive='None', min_value=1e-08)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Symmetric Positive Definite (SPD) Layer via Cholesky Factorization</p>
@@ -250,8 +269,8 @@ special case of symmetry for a 6x6 tensor.</dd>
 <dt><strong><code>positive</code></strong> :&ensp;<code>str</code></dt>
 <dd>The function to perform the positive
 transformation of the diagonal of the lower triangle tensor.
-Choices are 'Abs', 'Square' (default), 'Softplus', 'ReLU',
-'ReLU6', '4', and 'Exp'.</dd>
+Choices are 'Abs', 'Square', 'Softplus', 'ReLU',
+'ReLU6', '4', 'Exp', and 'None' (default).</dd>
 <dt><strong><code>min_value</code></strong> :&ensp;<code>float</code></dt>
 <dd>The minimum allowable value for a diagonal
 component. Default is 1e-8.</dd>
@@ -266,7 +285,7 @@ component. Default is 1e-8.</dd>
     &#34;&#34;&#34;
 
     def __init__(self, output_shape=6, symmetry=&#39;anisotropic&#39;,
-                 positive=&#39;Square&#39;, min_value=1e-8):
+                 positive=&#39;None&#39;, min_value=1e-8):
         &#34;&#34;&#34;
         Initialize Cholesky SPD layer
 
@@ -281,8 +300,8 @@ component. Default is 1e-8.</dd>
                 special case of symmetry for a 6x6 tensor.
             positive (str): The function to perform the positive
                 transformation of the diagonal of the lower triangle tensor.
-                Choices are &#39;Abs&#39;, &#39;Square&#39; (default), &#39;Softplus&#39;, &#39;ReLU&#39;,
-                &#39;ReLU6&#39;, &#39;4&#39;, and &#39;Exp&#39;.
+                Choices are &#39;Abs&#39;, &#39;Square&#39;, &#39;Softplus&#39;, &#39;ReLU&#39;,
+                &#39;ReLU6&#39;, &#39;4&#39;, &#39;Exp&#39;, and &#39;None&#39; (default).
             min_value (float): The minimum allowable value for a diagonal
                 component. Default is 1e-8.
         &#34;&#34;&#34;
@@ -399,7 +418,7 @@ shape (:, output_shape, output_shape)</p></div>
 </dd>
 <dt id="spdlayers.layers.Eigen"><code class="flex name class">
 <span>class <span class="ident">Eigen</span></span>
-<span>(</span><span>output_shape=6, symmetry='anisotropic', positive='Square', min_value=1e-08)</span>
+<span>(</span><span>output_shape=6, symmetry='anisotropic', positive='Square', min_value=1e-08, n_zero_eigvals=0)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Symmetric Positive Definite Layer via Eigendecomposition</p>
@@ -419,10 +438,17 @@ special case of symmetry for a 6x6 tensor.</dd>
 <dd>The function to perform the positive
 transformation of the diagonal of the lower triangle tensor.
 Choices are 'Abs', 'Square' (default), 'Softplus', 'ReLU',
-'ReLU6', '4', and 'Exp'.</dd>
+'ReLU6', '4', 'Exp', 'None'.</dd>
 <dt><strong><code>min_value</code></strong> :&ensp;<code>float</code></dt>
 <dd>The minimum allowable value for a diagonal
 component. Default is 1e-8.</dd>
+<dt><strong><code>n_zero_eigvals</code></strong> :&ensp;<code>int</code></dt>
+<dd>The number of zero eigenvalues to expect.
+This will zero the <code>n_zero_eigvals</code> smallest eigenvalues. When
+n_zero_eigvals=0 (default) then outputs will be SPD, otherwise
+outputs will be symmetric semi-definite. Note that min_value
+does not affect the zero'd eigenvalues, which will be exactly
+0.0.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -434,7 +460,7 @@ component. Default is 1e-8.</dd>
     &#34;&#34;&#34;
 
     def __init__(self, output_shape=6, symmetry=&#39;anisotropic&#39;,
-                 positive=&#39;Square&#39;, min_value=1e-8):
+                 positive=&#39;Square&#39;, min_value=1e-8, n_zero_eigvals=0):
         &#34;&#34;&#34;
         Initialize Eigendecomposition SPD layer
 
@@ -450,9 +476,15 @@ component. Default is 1e-8.</dd>
             positive (str): The function to perform the positive
                 transformation of the diagonal of the lower triangle tensor.
                 Choices are &#39;Abs&#39;, &#39;Square&#39; (default), &#39;Softplus&#39;, &#39;ReLU&#39;,
-                &#39;ReLU6&#39;, &#39;4&#39;, and &#39;Exp&#39;.
+                &#39;ReLU6&#39;, &#39;4&#39;, &#39;Exp&#39;, &#39;None&#39;.
             min_value (float): The minimum allowable value for a diagonal
                 component. Default is 1e-8.
+            n_zero_eigvals (int): The number of zero eigenvalues to expect.
+                This will zero the `n_zero_eigvals` smallest eigenvalues. When
+                n_zero_eigvals=0 (default) then outputs will be SPD, otherwise
+                outputs will be symmetric semi-definite. Note that min_value
+                does not affect the zero&#39;d eigenvalues, which will be exactly
+                0.0.
         &#34;&#34;&#34;
         super(Eigen, self).__init__()
         if symmetry == &#39;anisotropic&#39;:
@@ -464,6 +496,13 @@ component. Default is 1e-8.</dd>
                 raise ValueError(e)
         else:
             raise ValueError(f&#34;Symmetry {symmetry} not supported!&#34;)
+        if n_zero_eigvals &lt; 0 or n_zero_eigvals &gt;= output_shape:
+            raise ValueError(
+                f&#39;n_zero_eigvals: {n_zero_eigvals} must be less than&#34;\
+                &#34; output_shape and greater than 0!&#39;
+            )
+        self.n_zero_eigvals = n_zero_eigvals
+        self.zero_eigvals = n_zero_eigvals &gt; 0
 
         self.output_shape = output_shape
         self.positive = positive
@@ -494,11 +533,15 @@ component. Default is 1e-8.</dd>
         out[:, self.inds_b, self.inds_a] = x
 
         # U, D, UT = torch.linalg.svd(out)  # SVD DOES NOT WORK! reason unknown
-        D, U = torch.linalg.eig(out)
-        U = torch.real(U)
-        D = torch.real(D)
-        UT = U.inverse()  # don&#39;t tranpose, need inverse!
+        D, U = torch.linalg.eigh(out)
         D = self.positive_fun(D) + self.min_value
+        if self.zero_eigvals:
+            zeros_and_ones = torch.ones_like(D)
+            # set the columns to zero
+            zeros_and_ones[:, :self.n_zero_eigvals] = 0.0
+            # zero out the smallest eigenvalues
+            D = D * zeros_and_ones
+        UT = U.inverse()  # don&#39;t transpose, need inverse!
         out = U @ torch.diag_embed(D) @ UT
         return out</code></pre>
 </details>
@@ -563,11 +606,15 @@ shape (:, output_shape, output_shape)</p></div>
     out[:, self.inds_b, self.inds_a] = x
 
     # U, D, UT = torch.linalg.svd(out)  # SVD DOES NOT WORK! reason unknown
-    D, U = torch.linalg.eig(out)
-    U = torch.real(U)
-    D = torch.real(D)
-    UT = U.inverse()  # don&#39;t tranpose, need inverse!
+    D, U = torch.linalg.eigh(out)
     D = self.positive_fun(D) + self.min_value
+    if self.zero_eigvals:
+        zeros_and_ones = torch.ones_like(D)
+        # set the columns to zero
+        zeros_and_ones[:, :self.n_zero_eigvals] = 0.0
+        # zero out the smallest eigenvalues
+        D = D * zeros_and_ones
+    UT = U.inverse()  # don&#39;t transpose, need inverse!
     out = U @ torch.diag_embed(D) @ UT
     return out</code></pre>
 </details>
