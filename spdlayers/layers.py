@@ -125,7 +125,7 @@ class Eigen(nn.Module):
     """
 
     def __init__(self, output_shape=6, symmetry='anisotropic',
-                 positive='Square', min_value=1e-8):
+                 positive='Square', min_value=1e-8, n_zero_eigvals=0):
         """
         Initialize Eigendecomposition SPD layer
 
@@ -144,6 +144,12 @@ class Eigen(nn.Module):
                 'ReLU6', '4', 'Exp', 'None'.
             min_value (float): The minimum allowable value for a diagonal
                 component. Default is 1e-8.
+            n_zero_eigvals (int): The number of zero eigenvalues to expect.
+                This will zero the `n_zero_eigvals` smallest eigenvalues. When
+                n_zero_eigvals=0 (default) then outputs will be SPD, otherwise
+                outputs will be symmetric semi-definite. Note that min_value
+                does not affect the zero'd eigenvalues, which will be exactly
+                0.0.
         """
         super(Eigen, self).__init__()
         if symmetry == 'anisotropic':
@@ -155,6 +161,13 @@ class Eigen(nn.Module):
                 raise ValueError(e)
         else:
             raise ValueError(f"Symmetry {symmetry} not supported!")
+        if n_zero_eigvals < 0 or n_zero_eigvals >= output_shape:
+            raise ValueError(
+                f'n_zero_eigvals: {n_zero_eigvals} must be less than"\
+                " output_shape and greater than 0!'
+            )
+        self.n_zero_eigvals = n_zero_eigvals
+        self.zero_eigvals = n_zero_eigvals > 0
 
         self.output_shape = output_shape
         self.positive = positive
@@ -185,10 +198,14 @@ class Eigen(nn.Module):
         out[:, self.inds_b, self.inds_a] = x
 
         # U, D, UT = torch.linalg.svd(out)  # SVD DOES NOT WORK! reason unknown
-        D, U = torch.linalg.eig(out)
-        U = torch.real(U)
-        D = torch.real(D)
-        UT = U.inverse()  # don't tranpose, need inverse!
+        D, U = torch.linalg.eigh(out)
         D = self.positive_fun(D) + self.min_value
+        if self.zero_eigvals:
+            zeros_and_ones = torch.ones_like(D)
+            # set the columns to zero
+            zeros_and_ones[:, :self.n_zero_eigvals] = 0.0
+            # zero out the smallest eigenvalues
+            D = D * zeros_and_ones
+        UT = U.inverse()  # don't transpose, need inverse!
         out = U @ torch.diag_embed(D) @ UT
         return out

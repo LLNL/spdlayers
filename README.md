@@ -14,7 +14,7 @@ python -m pip install spdlayers
 
 ## About
 
-The `Cholesky` layer uses a cholesky factorization to enforce SPD, and the `Eigen` layer uses an eigendecomposition to enforce SPD.
+The `Cholesky` layer uses a cholesky factorization to enforce SPD, and the `Eigen` layer uses an eigendecomposition to enforce SPD or symmetric semi-definite predictions. Use the `n_zero_eigvals` option with the `Eigen` layer to enforce the exact number of zero eigenvalues that you should expect.
 
 Both layers take in some tensor of shape `[batch_size, input_shape]` and output a SPD tensor of shape `[batch_size, output_shape, output_shape]`. The relationship between input and output is defined by the following.
 
