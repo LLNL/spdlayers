@@ -148,7 +148,7 @@ class TestSPD(unittest.TestCase):
 
     def test_training_eig_n_zero(self):
         in_shape = 6
-        n_epochs = 5
+        n_epochs = 3
         n_data = 10
         hidden_size = 10
         out_shape = 3
@@ -172,7 +172,7 @@ class TestSPD(unittest.TestCase):
                 nn.Linear(hidden_size, in_shape),
                 Eigen(output_shape=out_shape,
                       symmetry='anisotropic',
-                      positive='ReLU',
+                      positive='Abs',
                       n_zero_eigvals=1,
                       min_value=0.0)
                 )
