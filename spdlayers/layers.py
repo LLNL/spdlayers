@@ -200,6 +200,6 @@ class Eigen(nn.Module):
             zeros_and_ones[:, :self.n_zero_eigvals] = 0.0
             # zero out the smallest eigenvalues
             D = D * zeros_and_ones
-        UT = U.inverse()  # don't tranpose, need inverse!
+        UT = U.inverse()  # don't transpose, need inverse!
         out = U @ torch.diag_embed(D) @ UT
         return out
