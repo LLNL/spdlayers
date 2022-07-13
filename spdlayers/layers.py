@@ -192,7 +192,7 @@ class Eigen(nn.Module):
         out[:, self.inds_b, self.inds_a] = x
 
         # U, D, UT = torch.linalg.svd(out)  # SVD DOES NOT WORK! reason unknown
-        # D, U = torch.linalg.eig(out)    
+        # D, U = torch.linalg.eig(out)
         # U = torch.real(U)
         # D = torch.real(D)
         D, U = torch.linalg.eigh(out)
