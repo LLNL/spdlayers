@@ -197,7 +197,11 @@ class Eigen(nn.Module):
         # D = torch.real(D)
         D, U = torch.linalg.eigh(out)
         if self.zero_eigvals:
-            D[:, :self.n_zero_eigvals] *= 0.0
+            zeros_and_ones = torch.ones_like(D)
+            # set the columns to zero
+            zeros_and_ones[:, :self.n_zero_eigvals] = 0.0
+            # zero out the smallest eigenvalues
+            D = D * zeros_and_ones
         UT = U.inverse()  # don't tranpose, need inverse!
         D = self.positive_fun(D) + self.min_value
         out = U @ torch.diag_embed(D) @ UT
