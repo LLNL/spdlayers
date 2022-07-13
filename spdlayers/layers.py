@@ -197,7 +197,7 @@ class Eigen(nn.Module):
         # D = torch.real(D)
         D, U = torch.linalg.eigh(out)
         if self.zero_eigvals:
-            D[:, :self.n_zero_eigvals] = 0.0
+            D[:, :self.n_zero_eigvals] *= 0.0
         UT = U.inverse()  # don't tranpose, need inverse!
         D = self.positive_fun(D) + self.min_value
         out = U @ torch.diag_embed(D) @ UT
