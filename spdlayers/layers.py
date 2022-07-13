@@ -125,7 +125,7 @@ class Eigen(nn.Module):
     """
 
     def __init__(self, output_shape=6, symmetry='anisotropic',
-                 positive='Square', min_value=1e-8):
+                 positive='Square', min_value=1e-8, n_zero_eigvals=0):
         """
         Initialize Eigendecomposition SPD layer
 
@@ -155,6 +155,13 @@ class Eigen(nn.Module):
                 raise ValueError(e)
         else:
             raise ValueError(f"Symmetry {symmetry} not supported!")
+        if n_zero_eigvals < 0 or n_zero_eigvals >= output_shape:
+            raise ValueError(
+                f'n_zero_eigvals: {n_zero_eigvals} must be less than"\
+                " output_shape and greater than 0!'
+            )
+        self.n_zero_eigvals = n_zero_eigvals
+        self.zero_eigvals = n_zero_eigvals > 0
 
         self.output_shape = output_shape
         self.positive = positive
@@ -185,9 +192,12 @@ class Eigen(nn.Module):
         out[:, self.inds_b, self.inds_a] = x
 
         # U, D, UT = torch.linalg.svd(out)  # SVD DOES NOT WORK! reason unknown
-        D, U = torch.linalg.eig(out)
-        U = torch.real(U)
-        D = torch.real(D)
+        # D, U = torch.linalg.eig(out)    
+        # U = torch.real(U)
+        # D = torch.real(D)
+        D, U = torch.linalg.eigh(out)
+        if self.zero_eigvals:
+            D[:, :self.n_zero_eigvals] = 0.0
         UT = U.inverse()  # don't tranpose, need inverse!
         D = self.positive_fun(D) + self.min_value
         out = U @ torch.diag_embed(D) @ UT
