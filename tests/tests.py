@@ -81,6 +81,11 @@ class TestSPD(unittest.TestCase):
             self.assertTrue(False)
         except ValueError:
             self.assertTrue(True)
+        try:
+            _ = Eigen(n_zero_eigvals=100)
+            self.assertTrue(False)
+        except ValueError:
+            self.assertTrue(True)
 
     def test_value_errors_chol(self):
         try:
