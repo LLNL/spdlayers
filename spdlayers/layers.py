@@ -144,6 +144,12 @@ class Eigen(nn.Module):
                 'ReLU6', '4', 'Exp', 'None'.
             min_value (float): The minimum allowable value for a diagonal
                 component. Default is 1e-8.
+            n_zero_eigvals (int): The number of zero eigenvalues to expect.
+                This will zero the `n_zero_eigvals` smallest eigenvalues. When
+                n_zero_eigvals=0 (default) then outputs will be SPD, otherwise
+                outputs will be symmetric semi-definite. Note that min_value
+                does not affect the zero'd eigenvalues, which will be exactly
+                0.0.
         """
         super(Eigen, self).__init__()
         if symmetry == 'anisotropic':
